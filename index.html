@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCPP Enerji Tahmini | Combined Cycle Power Plant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f4c75 100%);
+            background-attachment: fixed;
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(34, 197, 94, 0.1) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                filter: hue-rotate(0deg);
+            }
+            50% {
+                filter: hue-rotate(30deg);
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.7);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #86efac;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 2rem 4rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Glass Card Container */
+        .glass {
+            backdrop-filter: blur(20px);
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .glass:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(148, 163, 184, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 48px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin-bottom: 2rem;
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        .form-section:nth-child(1) { animation-delay: 0.1s; }
+        .form-section:nth-child(2) { animation-delay: 0.2s; }
+        .form-section:nth-child(3) { animation-delay: 0.3s; }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #7dd3fc;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            font-size: 1.25rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Form Field */
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-field label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .field-unit {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .form-field input,
+        .form-field select {
+            padding: 0.75rem 1rem;
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.5);
+            color: #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-field input:focus,
+        .form-field select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .form-field.field-error input,
+        .form-field.field-error select {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .form-field.field-success input,
+        .form-field.field-success select {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .btn-predict {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-predict::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-predict:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-reset {
+            background: rgba(94, 109, 122, 0.3);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .btn-reset:hover {
+            background: rgba(94, 109, 122, 0.5);
+            border-color: rgba(148, 163, 184, 0.6);
+        }
+
+        /* Error Alert */
+        .error-alert {
+            display: none;
+            padding: 1.25rem 1.5rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            animation: slideInDown 0.3s ease-out;
+        }
+
+        .error-alert.show {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .error-alert i {
+            color: #ef4444;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .error-alert-content {
+            flex: 1;
+        }
+
+        .error-alert-title {
+            font-weight: 600;
+            color: #fca5a5;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-alert-message {
+            color: #fecaca;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Result Card */
+        .result-card {
+            display: none;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+            border: 2px solid #10b981;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 2rem;
+            animation: resultPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .result-card.show {
+            display: block;
+        }
+
+        .result-card-icon {
+            font-size: 3rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .result-card-label {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-card-value {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-card-unit {
+            font-size: 1rem;
+            color: #86efac;
+            font-weight: 500;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(59, 130, 246, 0.2);
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes resultPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .glass {
+                padding: 1.5rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            nav {
+                padding: 0.75rem 1rem;
+            }
+
+            .nav-logo {
+                font-size: 1.2rem;
+            }
+
+            .container {
+                padding: 100px 1rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-bolt"></i>
+                CCPP Tahmin
+                <span class="nav-badge">v1.0</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>⚡ Enerji Üretimi Tahmini</h1>
+            <p>Combined Cycle Power Plant Net Saatlik Elektrik Enerjisi Tahmini</p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="glass">
+            <!-- Error Alert -->
+            <div class="error-alert" id="errorAlert">
+                <i class="fas fa-exclamation-circle"></i>
+                <div class="error-alert-content">
+                    <div class="error-alert-title">Hata Oluştu</div>
+                    <div class="error-alert-message" id="errorMessage"></div>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="ccppForm">
+                <!-- Section 1: Temperature and Vacuum -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-thermometer-half"></i>
+                        Sıcaklık ve Vakum
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label>
+                                Ortam Sıcaklığı (AT)
+                                <span class="field-unit">°C</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="AT" 
+                                name="AT" 
+                                placeholder="örn: 25.5"
+                                min="0"
+                                max="50"
+                                step="0.01"
+                                required
+                            >
+                        </div>
+                        <div class="form-field">
+                            <label>
+                                Egzoz Vakumu (V)
+                                <span class="field-unit">cm Hg</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="V" 
+                                name="V" 
+                                placeholder="örn: 50.5"
+                                min="20"
+                                max="90"
+                                step="0.01"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Pressure and Humidity -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-compress"></i>
+                        Basınç ve Nem
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label>
+                                Atmosferik Basınç (AP)
+                                <span class="field-unit">mbar</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="AP" 
+                                name="AP" 
+                                placeholder="örn: 1015.0"
+                                min="990"
+                                max="1040"
+                                step="0.01"
+                                required
+                            >
+                        </div>
+                        <div class="form-field">
+                            <label>
+                                Nispi Nem (RH)
+                                <span class="field-unit">%</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="RH" 
+                                name="RH" 
+                                placeholder="örn: 65.5"
+                                min="25"
+                                max="100"
+                                step="0.01"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-group">
+                    <button type="submit" class="btn btn-predict">
+                        <i class="fas fa-calculator"></i>
+                        Tahmini Hesapla
+                    </button>
+                    <button type="reset" class="btn btn-reset">
+                        <i class="fas fa-redo"></i>
+                        Temizle
+                    </button>
+                </div>
+            </form>
+
+            <!-- Result Card -->
+            <div class="result-card" id="resultCard">
+                <div class="result-card-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="result-card-label">Tahmini Net Saatlik Elektrik Enerjisi</div>
+                <div class="result-card-value" id="resultValue">0</div>
+                <div class="result-card-unit">MW</div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner"></div>
+            <div class="loading-text">Tahmini Hesaplanıyor...</div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>💡 Combined Cycle Power Plant Enerji Tahmin Sistemi | Kaggle Folds5x2_pp Dataset</p>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem;">HTML • CSS • JavaScript • FastAPI</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        class CCPPEnergyApp {
+            constructor() {
+                this.form = document.getElementById('ccppForm');
+                this.resultCard = document.getElementById('resultCard');
+                this.errorAlert = document.getElementById('errorAlert');
+                this.loadingOverlay = document.getElementById('loadingOverlay');
+                this.resultValue = document.getElementById('resultValue');
+                
+                this.fields = {
+                    AT: document.getElementById('AT'),
+                    V: document.getElementById('V'),
+                    AP: document.getElementById('AP'),
+                    RH: document.getElementById('RH')
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                this.form.addEventListener('reset', () => this.handleReset());
+                
+                Object.values(this.fields).forEach(field => {
+                    field.addEventListener('blur', () => this.validateField(field));
+                });
+            }
+
+            handleSubmit(e) {
+                e.preventDefault();
+                
+                this.hideError();
+                
+                if (!this.validateForm()) {
+                    return;
+                }
+
+                this.showLoading();
+                
+                const formData = {
+                    AT: parseFloat(this.fields.AT.value),
+                    V: parseFloat(this.fields.V.value),
+                    AP: parseFloat(this.fields.AP.value),
+                    RH: parseFloat(this.fields.RH.value)
+                };
+
+                fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    this.hideLoading();
+                    if (data.predicted_energy !== undefined) {
+                        this.displayResult(data.predicted_energy);
+                    } else if (data.error) {
+                        this.showError(data.error);
+                    }
+                })
+                .catch(error => {
+                    this.hideLoading();
+                    this.showError('API isteği başarısız: ' + error.message);
+                });
+            }
+
+            handleReset() {
+                this.hideResult();
+                this.hideError();
+                this.clearFieldStatus();
+            }
+
+            validateForm() {
+                const errors = [];
+                let hasError = false;
+
+                // AT: 0-50°C
+                const atValue = parseFloat(this.fields.AT.value);
+                if (!this.fields.AT.value) {
+                    errors.push('Ortam Sıcaklığı boş olamaz');
+                    this.markFieldError(this.fields.AT);
+                    hasError = true;
+                } else if (atValue < 0 || atValue > 50) {
+                    errors.push('Ortam Sıcaklığı 0-50°C arasında olmalıdır');
+                    this.markFieldError(this.fields.AT);
+                    hasError = true;
+                } else {
+                    this.markFieldSuccess(this.fields.AT);
+                }
+
+                // V: 20-90 cm Hg
+                const vValue = parseFloat(this.fields.V.value);
+                if (!this.fields.V.value) {
+                    errors.push('Egzoz Vakumu boş olamaz');
+                    this.markFieldError(this.fields.V);
+                    hasError = true;
+                } else if (vValue < 20 || vValue > 90) {
+                    errors.push('Egzoz Vakumu 20-90 cm Hg arasında olmalıdır');
+                    this.markFieldError(this.fields.V);
+                    hasError = true;
+                } else {
+                    this.markFieldSuccess(this.fields.V);
+                }
+
+                // AP: 990-1040 mbar
+                const apValue = parseFloat(this.fields.AP.value);
+                if (!this.fields.AP.value) {
+                    errors.push('Atmosferik Basınç boş olamaz');
+                    this.markFieldError(this.fields.AP);
+                    hasError = true;
+                } else if (apValue < 990 || apValue > 1040) {
+                    errors.push('Atmosferik Basınç 990-1040 mbar arasında olmalıdır');
+                    this.markFieldError(this.fields.AP);
+                    hasError = true;
+                } else {
+                    this.markFieldSuccess(this.fields.AP);
+                }
+
+                // RH: 25-100%
+                const rhValue = parseFloat(this.fields.RH.value);
+                if (!this.fields.RH.value) {
+                    errors.push('Nispi Nem boş olamaz');
+                    this.markFieldError(this.fields.RH);
+                    hasError = true;
+                } else if (rhValue < 25 || rhValue > 100) {
+                    errors.push('Nispi Nem 25-100% arasında olmalıdır');
+                    this.markFieldError(this.fields.RH);
+                    hasError = true;
+                } else {
+                    this.markFieldSuccess(this.fields.RH);
+                }
+
+                if (hasError) {
+                    this.showError(errors.join(', '));
+                    return false;
+                }
+
+                return true;
+            }
+
+            validateField(field) {
+                const value = parseFloat(field.value);
+                const fieldName = field.id;
+                
+                const ranges = {
+                    AT: { min: 0, max: 50 },
+                    V: { min: 20, max: 90 },
+                    AP: { min: 990, max: 1040 },
+                    RH: { min: 25, max: 100 }
+                };
+
+                if (!field.value) {
+                    this.clearFieldStatus(field);
+                    return;
+                }
+
+                if (value >= ranges[fieldName].min && value <= ranges[fieldName].max) {
+                    this.markFieldSuccess(field);
+                } else {
+                    this.markFieldError(field);
+                }
+            }
+
+            markFieldError(field) {
+                field.parentElement.classList.remove('field-success');
+                field.parentElement.classList.add('field-error');
+            }
+
+            markFieldSuccess(field) {
+                field.parentElement.classList.remove('field-error');
+                field.parentElement.classList.add('field-success');
+            }
+
+            clearFieldStatus(field = null) {
+                if (field) {
+                    field.parentElement.classList.remove('field-error', 'field-success');
+                } else {
+                    Object.values(this.fields).forEach(f => {
+                        f.parentElement.classList.remove('field-error', 'field-success');
+                    });
+                }
+            }
+
+            displayResult(energy) {
+                const formatted = new Intl.NumberFormat('tr-TR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(energy);
+                
+                this.resultValue.textContent = formatted;
+                this.resultCard.classList.add('show');
+                this.resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            hideResult() {
+                this.resultCard.classList.remove('show');
+            }
+
+            showError(message) {
+                document.getElementById('errorMessage').textContent = message;
+                this.errorAlert.classList.add('show');
+                this.errorAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            hideError() {
+                this.errorAlert.classList.remove('show');
+            }
+
+            showLoading() {
+                this.loadingOverlay.classList.add('show');
+            }
+
+            hideLoading() {
+                this.loadingOverlay.classList.remove('show');
+            }
+        }
+
+        // Initialize app on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            window.ccppApp = new CCPPEnergyApp();
+        });
+    </script>
+</body>
+</html>
