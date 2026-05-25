@@ -39,7 +39,6 @@ Elektrik enerjisi, büyük ölçekte depolanması zor ve maliyetli bir kaynaktı
 Projeyi kendi bilgisayarınızda test etmek için şu adımları izleyebilirsiniz:
 
 1. Depoyu bilgisayarınıza klonlayın:
-   ```bash
 2. Gerekli kütüphanelerin yüklü olduğundan emin olun:
       pip install pandas numpy scikit-learn xgboost lightgbm
 3.Modeli doğrudan terminal üzerinden test etmek için:
