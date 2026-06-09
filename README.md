@@ -41,7 +41,5 @@ Projeyi kendi bilgisayarınızda test etmek için şu adımları izleyebilirsini
 1. Depoyu bilgisayarınıza klonlayın:
 2. Gerekli kütüphanelerin yüklü olduğundan emin olun:
       pip install pandas numpy scikit-learn xgboost lightgbm
-3.Modeli doğrudan terminal üzerinden test etmek için:
-      python "ccppmodel_test.py"
 4. Web arayüzünü başlatmak için: ccpp.py dosyasını çalıştırın ve terminalde beliren yerel sunucu adresine (örn: localhost:5000) veya doğrudan index.html dosyasına tarayıcınızdan gidin.
    git clone [https://github.com/KULLANICI_ADIN/CCPP-Energy-Forecasting.git](https://github.com/KULLANICI_ADIN/CCPP-Energy-Forecasting.git)
