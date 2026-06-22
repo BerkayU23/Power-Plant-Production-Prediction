@@ -20,8 +20,8 @@ Elektrik enerjisi, büyük ölçekte depolanması zor ve maliyetli bir kaynaktı
 
 ## 🗂️ Proje Dosya Yapısı
 
-* **`CCPP System Forecaasting.py`**: Veri ön işleme (outlier temizliği, standartlaştırma), 5-Fold Cross-Validation ve Hyperparameter Tuning (XGBoost/LightGBM) işlemlerini içeren ana eğitim betiği.
-* **`ccppmodel_test.py`**: Eğitilmiş modeli içe aktararak dışarıdan verilen yeni bir veri seti üzerinde canlı tahminleme yapan test betiği.
+* **`CCPP System Forecaasting.py`**: Veri ön işleme (outlier temizliği, standartlaştırma), 5-Fold Cross-Validation ve Hyperparameter Tuning (XGBoost/LightGBM) işlemlerini içeren ana eğitim dosyası.
+* **`ccppmodel_test.py`**: Eğitilmiş modeli içe aktararak dışarıdan verilen yeni bir veri seti üzerinde canlı tahminleme yapan test dosyası.
 * **`CCPP_Systems.pkl`**: Eğitilmiş en iyi XGBoost modelini ve veri ölçeklendiriciyi (`StandardScaler`) barındıran serileştirilmiş model dosyası.
 * **`ccpptestdata.csv`**: Modelin performansını denemek için ayrılmış, doğru formatta (AT, V, AP, RH) hazırlanmış test veri seti.
 * **`ccpp.py`**: Tahmin modelini dış dünyaya açan backend (API) entegrasyon dosyası.
@@ -41,5 +41,5 @@ Projeyi kendi bilgisayarınızda test etmek için şu adımları izleyebilirsini
 1. Depoyu bilgisayarınıza klonlayın:
 2. Gerekli kütüphanelerin yüklü olduğundan emin olun:
       pip install pandas numpy scikit-learn xgboost lightgbm
-4. Web arayüzünü başlatmak için: ccpp.py dosyasını çalıştırın ve terminalde beliren yerel sunucu adresine (örn: localhost:5000) veya doğrudan index.html dosyasına tarayıcınızdan gidin.
+4. Web arayüzünü başlatmak için: ccpp.py dosyasını çalıştırın ve terminale python -m uvicorn ccpp:app yazarak terminalde belirtilen yerel sunucu adresine tıklayarak doürudan (örn: localhost:5000) veya doğrudan index.html dosyasına tarayıcınızdan gidin.
    git clone [https://github.com/KULLANICI_ADIN/CCPP-Energy-Forecasting.git](https://github.com/KULLANICI_ADIN/CCPP-Energy-Forecasting.git)
